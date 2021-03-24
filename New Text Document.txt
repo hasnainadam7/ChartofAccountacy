@@ -1,0 +1,54 @@
+
+function MyButton(key, update) {
+
+  if (key && key[0].id && key[0].id.length === 1) {
+    return (
+      <>
+
+        <div>
+          <Button style={{ backgroundColor: '#4285f4' }}
+
+            variant="contained"
+            color='primary'
+
+          >Primnary</Button>
+        </div>
+        <h1>This is for level one</h1>
+      </>
+    )
+
+  }
+
+  else if (key && key[0].id && key[0].id.length === 4) {
+    return (
+
+      <h1>This is for level level 2</h1>
+
+    )
+
+  }
+  else if (key && key[0].id && key[0].id.length === 6) {
+    return (
+
+      <h1>This is for level three</h1>
+
+    )
+
+  }
+  else if (key && key[0].id && key[0].id.length === 8) {
+    return (
+
+      <h1>This is for level one</h1>
+
+    )
+
+  }
+  else
+    return (
+
+      <h1>Why</h1>
+
+    )
+
+}
+
