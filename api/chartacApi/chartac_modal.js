@@ -3,13 +3,13 @@ const Schema = mongoose.Schema;
 
 // Define collection and schema for Business
 let chOfAcc = new Schema({
-  id: {
+  level: {
     type: String 
   },
   name: {
     type: String
   },
-  Child: {
+  children: {
     type: Array
   }
   

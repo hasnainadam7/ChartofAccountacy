@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 
 // app.use('/business', businessRoute);
 // app.use('/contacts', contactRoutes);
-app.use('/chartacApi/account', chartacRoute);
+app.use('/chartofaccount', chartacRoute);
 // app.use('/project', projectRoutes);
 // app.use('/installment',installmentRoutes)
 // app.use ('/policy',policyRoutes)

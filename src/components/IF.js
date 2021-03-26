@@ -108,9 +108,17 @@ function Trees(parent) {
   };
   const handleSelect = (event, nodeIds) => {
     console.log('fired', nodeIds)
+    
+    //only for top level
+    if(selecteds !==nodeIds){
+            console.log('fireddddd')
+    }
+
+
     for (var i = 0; i < data.length; i++) {
-      if (nodeIds == data[i]['id']) {
-        // console.log(data[i])
+      console.log(data[i])
+      if (nodeIds == data[i]['_id']) {
+        console.log('if cond passed',data[i])
         setSelecteds(data[i])
         setChildnode(data[i].children)
       }
@@ -119,7 +127,8 @@ function Trees(parent) {
   };
   useEffect(() => {
     async function fetchdata() {
-      const apidata = await axios.get('http://localhost:4000/chartacApi/account')
+      //http://localhost:4000
+      const apidata = await axios.get(apipah.APIPATH+'chartofaccount')
       console.log(apidata.data)
       setData(apidata.data);
     }
@@ -131,7 +140,7 @@ function Trees(parent) {
     node && node.map((n) => renderTree(n))
   )
   const renderTree = (nodes) => (
-    <TreeItem key={nodes && nodes.id} nodeId={nodes && nodes.id} label={nodes && nodes.name}>
+    <TreeItem key={nodes && nodes._id} nodeId={nodes && nodes._id} label={nodes && nodes.name}>
       {Array.isArray(nodes && nodes.children) ? nodes && nodes.children.map((n) => renderTree(n)) : null}
     </TreeItem>
   );
@@ -162,15 +171,15 @@ function Trees(parent) {
         <Button
           onClick={
             ()=>{          
-              setClickme(false)
+            setClickme(false)
             var children=[]
-            
             children=childnode
             
 
             var subObj={
-              id:uuidv4(),
+              _id:uuidv4(),
               name:newLevel,
+              children:[],
             }
             
             children.push(subObj)
@@ -191,7 +200,7 @@ function Trees(parent) {
 
               obj.children=children
               console.log('ok',obj)
-              axios.post(apipah.APIPATH + 'chartacApi/account/addAccountchild', obj)
+              axios.post(apipah.APIPATH + 'chartofaccount/addAccountchild', obj)
                     .then(res => console.log(res.data));
               setNewlevel('')
 
@@ -233,14 +242,14 @@ function Trees(parent) {
                   const obj =
                   {
 
-                    id:uuidv4(),
+                    level:'levelone',
                     name: newLevel,
                     children: [
 
                     ],
                   }
                   console.log('ok')
-                  axios.post(apipah.APIPATH + 'chartacApi/account/addAccount', obj)
+                  axios.post(apipah.APIPATH + 'chartofaccount/addAccount', obj)
                                             
                     .then(res => console.log(res.data));
                   setNewlevel('')
