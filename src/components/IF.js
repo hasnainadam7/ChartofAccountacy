@@ -162,7 +162,7 @@ function Trees(parent) {
         <Button
           onClick={
             ()=>{          
-            
+              setClickme(false)
             var children=[]
             
             children=childnode
