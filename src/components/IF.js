@@ -110,17 +110,13 @@ function Trees(parent) {
     console.log('fired', nodeIds)
     
     //only for top level
-    if(selecteds !==nodeIds){
-            console.log('fireddddd')
-    }
-
+   
 
     for (var i = 0; i < data.length; i++) {
-      console.log(data[i])
-      if (nodeIds == data[i]['_id']) {
+      if (nodeIds == data[i]['_id'] && data[i].level==="levelone") {
         console.log('if cond passed',data[i])
         setSelecteds(data[i])
-        setChildnode(data[i].children)
+        //setChildnode(data[i].children)
       }
     }
     setSelected(nodeIds);
