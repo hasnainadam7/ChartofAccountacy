@@ -23,9 +23,9 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     justifyContent: 'left',
-    textAlign:'left',
+    textAlign: 'left',
     flexWrap: 'wrap',
-    
+
   },
 
   formControl: {
@@ -57,7 +57,7 @@ export default function RecursiveTreeViews() {
   const handleChange = (event) => {
     setParent(event.target.value);
   };
-  return ( 
+  return (
     <>
       <div style={{ textAlign: "center" }}>
         <div>
@@ -89,7 +89,7 @@ export default function RecursiveTreeViews() {
 function Trees(parent) {
   const classes = useStyles();
   const [selecteds, setSelecteds] = useState([]);
-  const [childnode,setChildnode]=useState([]);
+  const [childnode, setChildnode] = useState([]);
   const [values, setValues] = useState('');
   const [clickme, setClickme] = useState(true)
   const [newLevel, setNewlevel] = useState('');
@@ -108,23 +108,29 @@ function Trees(parent) {
   };
   const handleSelect = (event, nodeIds) => {
     console.log('fired', nodeIds)
-    
     //only for top level
-   
-
     for (var i = 0; i < data.length; i++) {
-      if (nodeIds == data[i]['_id'] && data[i].level==="levelone") {
-        console.log('if cond passed',data[i])
+      if (nodeIds == data[i]['_id'] && data[i].level === "levelone") {
+        console.log('level one condition passed', data[i])
         setSelecteds(data[i])
-        //setChildnode(data[i].children)
+        setChildnode(data[i].children)
+
       }
+      //for 2nd level
+      for (var j = 0; j < data[i].children.length; j++) {
+
+        if (nodeIds === data[i].children['_id']) {
+          console.log(data[i].children)
+        }
+        }
+
     }
     setSelected(nodeIds);
   };
   useEffect(() => {
     async function fetchdata() {
       //http://localhost:4000
-      const apidata = await axios.get(apipah.APIPATH+'chartofaccount')
+      const apidata = await axios.get(apipah.APIPATH + 'chartofaccount')
       console.log(apidata.data)
       setData(apidata.data);
     }
@@ -166,24 +172,24 @@ function Trees(parent) {
         />
         <Button
           onClick={
-            ()=>{          
-            setClickme(false)
-            var children=[]
-            children=childnode
-            
-
-            var subObj={
-              _id:uuidv4(),
-              name:newLevel,
-              children:[],
-            }
-            
-            children.push(subObj)
+            () => {
+              setClickme(false)
+              var children = []
+              children = childnode
 
 
-            if(parent == 10){
-               
-            }
+              var subObj = {
+                _id: uuidv4(),
+                name: newLevel,
+                children: [],
+              }
+
+              children.push(subObj)
+
+
+              if (parent == 10) {
+
+              }
 
               // const obj =
               // {
@@ -192,12 +198,12 @@ function Trees(parent) {
               //   name: newLevel,
               //   children: children,
               // }
-              const obj=selecteds
+              const obj = selecteds
 
-              obj.children=children
-              console.log('ok',obj)
+              obj.children = children
+              console.log('ok', obj)
               axios.post(apipah.APIPATH + 'chartofaccount/addAccountchild', obj)
-                    .then(res => console.log(res.data));
+                .then(res => console.log(res.data));
               setNewlevel('')
 
             }
@@ -208,58 +214,58 @@ function Trees(parent) {
       </>
     );
   }
-//this is for top level
+  //this is for top level
   else {
     return (
       <>
-            <TreeView
-              className={classes.root}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpanded={['root']}
-              defaultExpandIcon={<ChevronRightIcon />}
-              expanded={expanded}
-              selected={selected}
-              onNodeToggle={handleToggle}
-              onNodeSelect={handleSelect}
-            >
-              {rendMyTreeNew(data)}
-            </TreeView>
+        <TreeView
+          className={classes.root}
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpanded={['root']}
+          defaultExpandIcon={<ChevronRightIcon />}
+          expanded={expanded}
+          selected={selected}
+          onNodeToggle={handleToggle}
+          onNodeSelect={handleSelect}
+        >
+          {rendMyTreeNew(data)}
+        </TreeView>
 
-            <div>
-              <TextField value={newLevel}
-                onChange={fortoplevel}
-                value={newLevel}
-              />
-            </div>
-            <Button
-              variant="contained" onClick={
-                () => {
-                  setClickme(false)
-                  const obj =
-                  {
+        <div>
+          <TextField value={newLevel}
+            onChange={fortoplevel}
+            value={newLevel}
+          />
+        </div>
+        <Button
+          variant="contained" onClick={
+            () => {
+              setClickme(false)
+              const obj =
+              {
 
-                    level:'levelone',
-                    name: newLevel,
-                    children: [
+                level: 'levelone',
+                name: newLevel,
+                children: [
 
-                    ],
-                  }
-                  console.log('ok')
-                  axios.post(apipah.APIPATH + 'chartofaccount/addAccount', obj)
-                                            
-                    .then(res => console.log(res.data));
-                  setNewlevel('')
-
-
-                }
-
+                ],
               }
-            >
-              Submit</Button>
+              console.log('ok')
+              axios.post(apipah.APIPATH + 'chartofaccount/addAccount', obj)
+
+                .then(res => console.log(res.data));
+              setNewlevel('')
+
+
+            }
+
+          }
+        >
+          Submit</Button>
 
 
 
-          </>
+      </>
     )
   }
 
