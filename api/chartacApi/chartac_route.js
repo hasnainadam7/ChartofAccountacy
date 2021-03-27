@@ -19,7 +19,7 @@ clsRout.route('/addAccount').post(function (req, res) {
 
 
 clsRout.route('/addAccountchild').post(function (req, res) {
-  var oId = req.body["_id"]
+  var oId = req.body._id
 
 console.log('yes yes reach here',req.body,oId)
   classes.findById(oId, function (err, projDetail){
@@ -43,7 +43,7 @@ console.log('yes yes reach here',req.body,oId)
   })
 
 
-//   let CLS = new classes(req.body);
+  //   let CLS = new classes(req.body);
 //   console.log('yes yes')
 //   console.log(CLS)
 //   CLS.save()

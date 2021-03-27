@@ -107,27 +107,31 @@ function Trees(parent) {
     setExpanded(nodeIds);
   };
   const handleSelect = (event, nodeIds) => {
-    console.log('fired', nodeIds)
+    // console.log('fired', nodeIds)
     //only for top level
     for (var i = 0; i < data.length; i++) {
       if (nodeIds == data[i]['_id'] && data[i].level === "levelone") {
         console.log('level one condition passed', data[i])
         setSelecteds(data[i])
         setChildnode(data[i].children)
-
       }
-      //for 2nd level
-      for (var j = 0; j < data[i].children.length; j++) {
-
-        if (nodeIds === data[i].children['_id']) {
-          console.log(data[i].children)
-        }
-        }
-
     }
+    for(var j=0 ;j<childnode.length;j++)
+
+    {      
+    if (nodeIds ===  childnode[j]._id && childnode[j].level === "leveltwo") {
+          console.log('level two condition passed',childnode[j].children)
+          setSelecteds(childnode[j])
+          setChildnode(childnode[j].children)
+        }
+      }
+
     setSelected(nodeIds);
   };
+
+
   useEffect(() => {
+    setExpanded(["1"])
     async function fetchdata() {
       //http://localhost:4000
       const apidata = await axios.get(apipah.APIPATH + 'chartofaccount')
@@ -153,7 +157,7 @@ function Trees(parent) {
         <TreeView
           className={classes.root}
           defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpanded={['root']}
+           defaultExpanded={['root']}
           defaultExpandIcon={<ChevronRightIcon />}
           expanded={expanded}
           selected={selected}
@@ -176,40 +180,24 @@ function Trees(parent) {
               setClickme(false)
               var children = []
               children = childnode
-
-
-              var subObj = {
+                var subObj = {
                 _id: uuidv4(),
                 name: newLevel,
+                level:'leveltwo',
                 children: [],
               }
-
               children.push(subObj)
-
-
               if (parent == 10) {
-
               }
-
-              // const obj =
-              // {
-
-              //   id: 'root',
-              //   name: newLevel,
-              //   children: children,
-              // }
               const obj = selecteds
-
               obj.children = children
               console.log('ok', obj)
               axios.post(apipah.APIPATH + 'chartofaccount/addAccountchild', obj)
                 .then(res => console.log(res.data));
               setNewlevel('')
-
             }
-
           }>
-          clickMe</Button>
+          LEVELONE</Button>
 
       </>
     );
