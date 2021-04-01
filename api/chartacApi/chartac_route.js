@@ -1,8 +1,6 @@
 const express = require('express');
 const clsRout = express.Router();
-
 let classes = require('./chartac_modal')
-
 clsRout.route('/addAccount').post(function (req, res) {
 
   let CLS = new classes(req.body);
@@ -16,11 +14,8 @@ clsRout.route('/addAccount').post(function (req, res) {
       res.status(400).send("unable to save to database");
     });
 });
-
-
 clsRout.route('/addAccountchild').post(function (req, res) {
   var oId = req.body._id
-
 console.log('yes yes reach here',req.body,oId)
   classes.findById(oId, function (err, projDetail){
     if(!projDetail)
@@ -41,20 +36,30 @@ console.log('yes yes reach here',req.body,oId)
     }
   
   })
-
-
-  //   let CLS = new classes(req.body);
-//   console.log('yes yes')
-//   console.log(CLS)
-//   CLS.save()
-//     .then(jk => {
-//       res.status(200).json({'Account': 'Account added successfully'});
-//     })
-//     .catch(err => {
-//       res.status(400).send("unable to save to database");
-//     });
- });
-
+});  
+ clsRout.route('/add2Accountchild').post(function (req, res) {
+  var oId = req.body._id
+console.log('yes yes reach here',req.body,oId)
+  classes.findById(oId, function (err, projDetail){
+    if(!projDetail)
+    {
+      res.status(404).send("data is not found");
+    }
+     else
+    {
+      console.log(projDetail,req.body)
+      projDetail.children=req.body["children"] 
+      projDetail.markModified("children")
+      projDetail.save().then(proj => {
+        res.json('Update complete');
+      })
+      .catch(err => {
+        res.status(400).send("unable to update the database");
+      })
+    }
+  
+  })
+});
 clsRout.route('/').get(function (req, res) {
   console.log('From index') 
   classes.find({}, function(err, businesses){

@@ -15,7 +15,6 @@ import axios from 'axios';
 import '../App.css'
 const apipah = require('../apiPath')
 const useStyles = makeStyles((theme) => ({
-
   paper: {
     padding: theme.spacing(2),
     textAlign: 'center',
@@ -25,9 +24,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'left',
     textAlign: 'left',
     flexWrap: 'wrap',
-
   },
-
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
@@ -44,70 +41,33 @@ const useStyles = makeStyles((theme) => ({
     color: 'red',
     cursor: 'pointer',
     onHover: 'pointer',
-  }
-
-}));
-//For DropDown 
-export default function RecursiveTreeViews() {
-  const [parents, setParent] = useState('10');
-
-
-  const classes = useStyles();
-
-  const handleChange = (event) => {
-    setParent(event.target.value);
-  };
-  return (
-    <>
-      <div style={{ textAlign: "center" }}>
-        <div>
-          <Select
-
-            value={parents}
-            onChange={handleChange}
-            displayEmpty
-            className={classes.selectEmpty}
-            inputProps={{ 'aria-label': 'Without label' }}
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={10}>Childs</MenuItem>
-            <MenuItem value={20}>Parent</MenuItem>
-          </Select>
-        </div>
-        <div style={{ textAlign: "center" }}>
-
-          {Trees(parents)}
-        </div>
-      </div>
-
-    </>
-  )
-}
-
-function Trees(parent) {
+  }}));
+export default function Trees() {
   const classes = useStyles();
   const [selecteds, setSelecteds] = useState([]);
   const [childnode, setChildnode] = useState([]);
-  const [values, setValues] = useState('');
   const [clickme, setClickme] = useState(true)
   const [newLevel, setNewlevel] = useState('');
   const [spacing, setSpacing] = React.useState(2);
   const [data, setData] = useState('');
+  const [parents, setParent] = useState('10');
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
-  const handleChange = (event) => {
-    setValues(event.target.value);
-  };
   const fortoplevel = (event) => {
     setNewlevel(event.target.value);
   };
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
   };
+  const handleChange = (event) => {
+    setParent(event.target.value);
+  };
+
   const handleSelect = (event, nodeIds) => {
+
+
     // console.log('fired', nodeIds)
+
     //only for top level
     for (var i = 0; i < data.length; i++) {
       if (nodeIds == data[i]['_id'] && data[i].level === "levelone") {
@@ -116,15 +76,13 @@ function Trees(parent) {
         setChildnode(data[i].children)
       }
     }
-    for(var j=0 ;j<childnode.length;j++)
-
-    {      
-    if (nodeIds ===  childnode[j]._id && childnode[j].level === "leveltwo") {
-          console.log('level two condition passed',childnode[j].children)
-          setSelecteds(childnode[j])
-          setChildnode(childnode[j].children)
-        }
+    for (var j = 0; j < childnode.length; j++) {
+      if (nodeIds === childnode[j]._id && childnode[j].level === "leveltwo") {
+        console.log('level two condition passed', childnode[j].children)
+        setSelecteds(childnode[j])
+        setChildnode(childnode[j].children)
       }
+    }
 
     setSelected(nodeIds);
   };
@@ -150,14 +108,33 @@ function Trees(parent) {
       {Array.isArray(nodes && nodes.children) ? nodes && nodes.children.map((n) => renderTree(n)) : null}
     </TreeItem>
   );
-  //this is for child
-  if (parent == '10') {
-    return (
-      <>
+
+  return (
+    <>
+      <div style={{ textAlign: "center" }}>
+        <div>
+          <Select
+
+            value={parents}
+            onChange={handleChange}
+            displayEmpty
+            className={classes.selectEmpty}
+            inputProps={{ 'aria-label': 'Without label' }}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={"Parent"}>TopLevel</MenuItem>
+            <MenuItem value={"Level1"}>LevelOne</MenuItem>
+            <MenuItem value={"Level2"}>level Two</MenuItem>
+
+          </Select>
+        </div>
+
         <TreeView
           className={classes.root}
           defaultCollapseIcon={<ExpandMoreIcon />}
-           defaultExpanded={['root']}
+          defaultExpanded={['root']}
           defaultExpandIcon={<ChevronRightIcon />}
           expanded={expanded}
           selected={selected}
@@ -178,84 +155,61 @@ function Trees(parent) {
           onClick={
             () => {
               setClickme(false)
-              var children = []
-              children = childnode
+              if (parents == "Parent") {
+                const obj =
+                {
+                  level: 'levelone',
+                  name: newLevel,
+                  children: [
+                  ],
+                }
+                console.log('ok')
+                axios.post(apipah.APIPATH + 'chartofaccount/addAccount', obj)
+                  .then(res => console.log(res.data));
+                setNewlevel('')
+              }
+
+              else if (parents == "Level1") {
+
+                var children = []
+                children = childnode
                 var subObj = {
-                _id: uuidv4(),
-                name: newLevel,
-                level:'leveltwo',
-                children: [],
+                  _id: uuidv4(),
+                  name: newLevel,
+                  level: 'leveltwo',
+                  children: [],
+                }
+                children.push(subObj)
+
+                const obj = selecteds
+                obj.children = children
+                console.log('ok', obj)
+                axios.post(apipah.APIPATH + 'chartofaccount/addAccountchild', obj)
+                  .then(res => console.log(res.data));
+                setNewlevel('')
               }
-              children.push(subObj)
-              if (parent == 10) {
+              else if (parents == 'level2') {
+                var children = []
+                children = childnode
+                var subObj = {
+                  _id: uuidv4(),
+                  name: newLevel,
+                  level: 'leveltwo',
+                  children: [],
+                }
+                children.push(subObj)
+                const obj = selecteds
+                obj.children = children
+                console.log('ok', obj)
+                axios.post(apipah.APIPATH + 'chartofaccount/add2Accountchild', obj)
+                  .then(res => console.log(res.data));
+                setNewlevel('')
               }
-              const obj = selecteds
-              obj.children = children
-              console.log('ok', obj)
-              axios.post(apipah.APIPATH + 'chartofaccount/addAccountchild', obj)
-                .then(res => console.log(res.data));
-              setNewlevel('')
             }
-          }>
-          LEVELONE</Button>
-
-      </>
-    );
-  }
-  //this is for top level
-  else {
-    return (
-      <>
-        <TreeView
-          className={classes.root}
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpanded={['root']}
-          defaultExpandIcon={<ChevronRightIcon />}
-          expanded={expanded}
-          selected={selected}
-          onNodeToggle={handleToggle}
-          onNodeSelect={handleSelect}
-        >
-          {rendMyTreeNew(data)}
-        </TreeView>
-
-        <div>
-          <TextField value={newLevel}
-            onChange={fortoplevel}
-            value={newLevel}
-          />
-        </div>
-        <Button
-          variant="contained" onClick={
-            () => {
-              setClickme(false)
-              const obj =
-              {
-
-                level: 'levelone',
-                name: newLevel,
-                children: [
-
-                ],
-              }
-              console.log('ok')
-              axios.post(apipah.APIPATH + 'chartofaccount/addAccount', obj)
-
-                .then(res => console.log(res.data));
-              setNewlevel('')
-
-
-            }
-
           }
         >
           Submit</Button>
-
-
-
-      </>
-    )
-  }
-
+      </div>
+    </>
+  );
 }
-
